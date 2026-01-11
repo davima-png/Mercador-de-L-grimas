@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mercador de Lágrimas - Blasphemous Theme</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- CORE THEME --- */
+        :root {
+            --bg-void: #050404;
+            --bg-panel: #0e0a0a;
+            --gold-muted: #6b5a35;
+            --gold-light: #d4af37;
+            --blood: #4a0404;
+            --text-bone: #c0b098;
+            --overlay-vignette: radial-gradient(circle, rgba(0,0,0,0) 50%, rgba(0,0,0,0.8) 100%);
+        }
+
+        body {
+            background-color: var(--bg-void);
+            color: var(--text-bone);
+            font-family: 'Crimson Text', serif;
+            overflow-x: hidden;
+            /* Textura de ruído sutil para aspecto de filme antigo/pixel art */
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+        }
+
+        /* --- TYPOGRAPHY --- */
+        .font-title { font-family: 'UnifrakturMaguntia', cursive; }
+        .font-deco { font-family: 'Cinzel Decorative', cursive; }
+
+        /* --- VISUAL FX --- */
+        .vignette {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--overlay-vignette);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Moldura Dupla Estilo Barroco */
+        .relic-card {
+            background: linear-gradient(145deg, #110d0d 0%, #080606 100%);
+            border: 1px solid #332211;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+        }
+
+        .relic-card::after {
+            content: '';
+            position: absolute;
+            top: 4px; bottom: 4px; left: 4px; right: 4px;
+            border: 1px solid var(--gold-muted);
+            opacity: 0.3;
+            pointer-events: none;
+            transition: opacity 0.3s, border-color 0.3s;
+        }
+
+        .relic-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.1);
+            border-color: var(--gold-muted);
+        }
+
+        .relic-card:hover::after {
+            opacity: 0.8;
+            border-color: var(--gold-light);
+        }
+
+        /* Efeito de Brilho no Ícone */
+        .icon-container {
+            position: relative;
+            display: inline-block;
+        }
+        .icon-glow {
+            filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.3));
+            transition: filter 0.3s;
+        }
+        .relic-card:hover .icon-glow {
+            filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6));
+        }
+
+        /* Botões Estilizados */
+        .btn-penance {
+            background: transparent;
+            border: 1px solid var(--gold-muted);
+            color: var(--gold-muted);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-penance::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-penance:hover {
+            border-color: var(--gold-light);
+            color: var(--gold-light);
+            text-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
+            background: rgba(20, 15, 10, 0.8);
+        }
+
+        .btn-penance:hover::before {
+            left: 100%;
+        }
+
+        .btn-active {
+            border-color: var(--gold-light);
+            color: var(--gold-light);
+            background: rgba(212, 175, 55, 0.05);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.1) inset;
+        }
+
+        /* Scrollbar Customizada */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #050404; }
+        ::-webkit-scrollbar-thumb { background: #3d2f18; border-radius: 2px; }
+        ::-webkit-scrollbar-thumb:hover { background: #5c4825; }
+
+        /* Animação do Modal */
+        .modal-bg { backdrop-filter: blur(5px); }
+        .modal-content {
+            border-image: linear-gradient(to bottom, var(--gold-muted), #1a1010, var(--gold-muted)) 1;
+            box-shadow: 0 0 50px rgba(0,0,0,0.9);
+        }
+
+    </style>
+</head>
+<body class="min-h-screen flex flex-col relative">
+
+    <div class="vignette"></div>
+
+    <!-- Top Navigation / Header -->
+    <header class="relative z-10 pt-12 pb-8 text-center border-b border-[#1f1510] bg-gradient-to-b from-black/80 to-transparent">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-center mb-4 opacity-80">
+                <i data-lucide="crown" class="w-8 h-8 text-[#5e4a35]"></i>
+            </div>
+            <h1 class="text-5xl md:text-7xl font-title text-[#d4af37] tracking-wider drop-shadow-lg mb-2">
+                Mercador de Lágrimas
+            </h1>
+            <div class="h-px w-32 bg-gradient-to-r from-transparent via-[#5e4a35] to-transparent mx-auto mb-4"></div>
+            <p class="text-[#888] font-deco text-sm tracking-[0.2em] uppercase">
+                Custódia dos Pecados & Oferendas
+            </p>
+        </div>
+    </header>
+
+    <!-- Main Shop Area -->
+    <main class="flex-grow container mx-auto px-4 py-10 relative z-10 max-w-6xl">
+        
+        <!-- Filter Tabs -->
+        <div class="flex flex-wrap justify-center gap-4 mb-16">
+            <button onclick="filterItems('all')" class="btn-penance px-6 py-2 font-deco text-sm tracking-widest btn-active" data-cat="all">
+                Todas as Oferendas
+            </button>
+            <button onclick="filterItems('cargos')" class="btn-penance px-6 py-2 font-deco text-sm tracking-widest" data-cat="cargos">
+                Títulos & Honras
+            </button>
+            <button onclick="filterItems('consumiveis')" class="btn-penance px-6 py-2 font-deco text-sm tracking-widest" data-cat="consumiveis">
+                Indulgências
+            </button>
+            <button onclick="filterItems('reliquias')" class="btn-penance px-6 py-2 font-deco text-sm tracking-widest" data-cat="reliquias">
+                Relíquias
+            </button>
+        </div>
+
+        <!-- Inventory Grid -->
+        <div id="shop-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- JS Injection Area -->
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 border-t border-[#1f1510] bg-black/90 py-8 mt-auto">
+        <div class="container mx-auto px-4 text-center">
+            <p class="font-title text-[#4a3b2a] text-xl mb-2">Penitência é o caminho para a ascensão.</p>
+            <p class="text-[10px] text-[#333] uppercase tracking-widest font-sans">
+                Sistema de Comércio Assíncrono para Discord
+            </p>
+        </div>
+    </footer>
+
+    <!-- Detailed Modal -->
+    <div id="modal" class="fixed inset-0 z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div class="modal-bg absolute inset-0 bg-black/90" onclick="closeModal()"></div>
+        
+        <div id="modal-panel" class="modal-content relative bg-[#0e0a0a] w-full max-w-lg mx-4 p-1 transform scale-95 transition-transform duration-300 border-2 border-transparent">
+            <!-- Inner Frame -->
+            <div class="border border-[#332211] p-8 bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')]">
+                
+                <button onclick="closeModal()" class="absolute top-4 right-4 text-[#554433] hover:text-[#8a0303] transition-colors">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+
+                <div class="flex flex-col items-center text-center">
+                    <!-- Icon Halo -->
+                    <div class="mb-6 relative">
+                        <div class="absolute inset-0 bg-[#d4af37] blur-2xl opacity-10 rounded-full"></div>
+                        <div id="modal-icon" class="relative text-[#d4af37]"></div>
+                    </div>
+
+                    <h2 id="modal-title" class="text-3xl font-title text-[#d4af37] mb-2 tracking-wide"></h2>
+                    <div class="h-px w-16 bg-[#332211] mb-4"></div>
+                    
+                    <p id="modal-desc" class="text-[#998877] font-serif italic text-lg leading-relaxed mb-6"></p>
+
+                    <!-- Price Tag -->
+                    <div class="flex items-center gap-2 mb-8 text-[#a39276] border border-[#332211] px-4 py-1 rounded bg-black/20">
+                        <i data-lucide="coins" class="w-4 h-4"></i>
+                        <span class="font-deco text-sm">Custo: </span>
+                        <span id="modal-price" class="font-bold text-[#d4af37]"></span>
+                    </div>
+
+                    <!-- Command Box -->
+                    <div class="w-full bg-black/40 border border-[#332211] p-4 relative group">
+                        <p class="text-[10px] text-[#554433] uppercase tracking-[0.2em] mb-2 text-left">
+                            Copiar Oração (Comando)
+                        </p>
+                        <div class="flex items-center justify-between gap-2 cursor-pointer" onclick="copyCommand()">
+                            <code id="command-text" class="font-mono text-[#d4af37] text-sm break-all text-left"></code>
+                            <i data-lucide="copy" class="w-4 h-4 text-[#554433] group-hover:text-[#d4af37] transition-colors"></i>
+                        </div>
+                        
+                        <!-- Success Message -->
+                        <div id="copy-feedback" class="absolute inset-0 bg-[#0e0a0a] flex items-center justify-center text-[#d4af37] font-deco text-sm opacity-0 transition-opacity pointer-events-none border border-[#d4af37]">
+                            <span class="mr-2">✦</span> Copiado <span class="ml-2">✦</span>
+                        </div>
+                    </div>
+
+                    <p class="mt-4 text-xs text-[#443322]">
+                        Cole este comando no canal #mercado do Discord.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- CONFIGURAÇÃO DA LOJA ---
+        // Aqui os comandos foram padronizados para o UnbelievaBoat (!buy-item "Nome")
+        const inventory = [
+            {
+                id: "vip_gold",
+                name: "Manto de Crisântemo",
+                category: "cargos",
+                price: "5.000 Lágrimas",
+                desc: "Concede o cargo VIP Dourado por 30 luas. Acesso aos arquivos secretos e prioridade nas salas de voz.",
+                icon: "crown",
+                command: "!buy-item \"Manto de Crisântemo\"" 
+            },
+            {
+                id: "warn_clear",
+                name: "Indulgência Plena",
+                category: "consumiveis",
+                price: "2.500 Lágrimas",
+                desc: "Queima um registro de infração (Warn) do seu histórico. O passado é esquecido, mas não apagado.",
+                icon: "scroll",
+                command: "!buy-item \"Indulgência Plena\""
+            },
+            {
+                id: "xp_elixir",
+                name: "Cálice de Fervor",
+                category: "consumiveis",
+                price: "800 Lágrimas",
+                desc: "Aumenta a experiência ganha em conversas por 24 horas. Beba e propague a palavra.",
+                icon: "flame",
+                command: "!buy-item \"Cálice de Fervor\""
+            },
+            {
+                id: "custom_color",
+                name: "Tintura Herege",
+                category: "reliquias",
+                price: "10.000 Lágrimas",
+                desc: "Permite escolher uma cor Hexadecimal única para seu nome no servidor.",
+                icon: "palette",
+                command: "!buy-item \"Tintura Herege\""
+            },
+            {
+                id: "private_room",
+                name: "Chave da Cripta",
+                category: "cargos",
+                price: "15.000 Lágrimas",
+                desc: "Criação de canal de voz privado e editável. Seu santuário pessoal.",
+                icon: "key",
+                command: "!buy-item \"Chave da Cripta\""
+            },
+            {
+                id: "rename",
+                name: "Máscara sem Rosto",
+                category: "consumiveis",
+                price: "500 Lágrimas",
+                desc: "Permite alterar o apelido no servidor sem esperar o tempo de recarga.",
+                icon: "mask",
+                command: "!buy-item \"Máscara sem Rosto\""
+            }
+        ];
+
+        // --- LÓGICA DO SISTEMA ---
+
+        function renderShop(filter = 'all') {
+            const grid = document.getElementById('shop-grid');
+            grid.innerHTML = '';
+
+            const items = filter === 'all' 
+                ? inventory 
+                : inventory.filter(i => i.category === filter);
+
+            items.forEach(item => {
+                const el = document.createElement('div');
+                el.className = 'relic-card group cursor-pointer p-6 flex flex-col items-center text-center h-full';
+                el.onclick = () => openModal(item);
+                
+                el.innerHTML = `
+                    <div class="mb-4 text-[#5e4a35] group-hover:text-[#d4af37] transition-colors duration-500 icon-container">
+                        <i data-lucide="${item.icon}" class="w-12 h-12 icon-glow"></i>
+                    </div>
+                    
+                    <h3 class="font-deco text-lg text-[#ccc] mb-2 group-hover:text-[#d4af37] transition-colors">
+                        ${item.name}
+                    </h3>
+                    
+                    <p class="text-xs text-[#665] font-serif italic line-clamp-2 mb-4">
+                        ${item.desc}
+                    </p>
+
+                    <div class="mt-auto border-t border-[#1f1510] w-full pt-4 flex justify-between items-center opacity-60 group-hover:opacity-100 transition-opacity">
+                        <span class="text-xs text-[#8a7040] uppercase tracking-wider font-bold">${item.price}</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4 text-[#8a0303]"></i>
+                    </div>
+                `;
+                grid.appendChild(el);
+            });
+            lucide.createIcons();
+        }
+
+        function filterItems(cat) {
+            document.querySelectorAll('button[data-cat]').forEach(btn => {
+                if(btn.dataset.cat === cat) {
+                    btn.classList.add('btn-active');
+                    btn.classList.remove('opacity-50');
+                } else {
+                    btn.classList.remove('btn-active');
+                    btn.classList.add('opacity-50');
+                }
+            });
+            renderShop(cat);
+        }
+
+        // --- MODAL CONTROL ---
+        const modal = document.getElementById('modal');
+        const modalPanel = document.getElementById('modal-panel');
+
+        function openModal(item) {
+            document.getElementById('modal-title').innerText = item.name;
+            document.getElementById('modal-desc').innerText = item.desc;
+            document.getElementById('modal-price').innerText = item.price;
+            document.getElementById('command-text').innerText = item.command;
+            
+            const iconBox = document.getElementById('modal-icon');
+            iconBox.innerHTML = `<i data-lucide="${item.icon}" class="w-16 h-16"></i>`;
+            lucide.createIcons({ root: iconBox });
+
+            modal.classList.remove('hidden');
+            // Timeout para animação funcionar
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modalPanel.classList.remove('scale-95');
+            }, 10);
+        }
+
+        function closeModal() {
+            modal.classList.add('opacity-0');
+            modalPanel.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                document.getElementById('copy-feedback').classList.add('opacity-0');
+            }, 300);
+        }
+
+        function copyCommand() {
+            const text = document.getElementById('command-text').innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                const feedback = document.getElementById('copy-feedback');
+                feedback.classList.remove('opacity-0');
+                setTimeout(() => {
+                    feedback.classList.add('opacity-0');
+                }, 2000);
+            });
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            renderShop();
+        });
+
+    </script>
+</body>
+</html>
